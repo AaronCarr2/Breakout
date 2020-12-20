@@ -1,0 +1,9 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+canvas {
+  display: block;
+  background-image: url("https://cdn.pocket-lint.com/r/s/660x/assets/images/142413-apps-feature-art-and-science-collide-the-best-in-modern-space-art-image48-x0iuty9gs8-jpg.webp?v1");
+  margin: 0 auto;
+}
