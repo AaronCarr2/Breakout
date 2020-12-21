@@ -2,32 +2,38 @@ var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var x = canvas.width / 2;
 var y = canvas.height - 30;
-var dx = 4;
-var dy = -4;
-var ballRadius = 12;
+var dx = 7;
+var dy = -5;
+var ballRadius = 18;
 
 //Get a random color when the ball hits the wall
 var hex;
 var color = randomColor();
 
-var paddleHeight = 18;
-var paddleWidth = 105;
+var paddleHeight = 15;
+var paddleWidth = 120;
 var paddleX = (canvas.width - paddleWidth) / 2;
 
 var rightPressed = false;
 var leftPressed = false;
 
-var brickRowCount = 7;
-var brickColumnCount = 9;
-var brickWidth = 50;
-var brickHeight = 22;
-var brickPadding = 10;
-var brickOffsetTop = 30;
-var brickOffsetLeft = 30;
+var brickRowCount = 5;
+var brickColumnCount = 8;
+var brickWidth = 54;
+var brickHeight = 20;
+var brickPadding = 12;
+var brickOffsetTop = 85;
+var brickOffsetLeft = 40;
 
 var score = 0;
 
-var lives = 3;
+var lives = 1;
+
+// Trying audio (again)
+var bgSound = new Audio("Mountain Audio - Suspense Rhythm.mp3");
+var hitBrick = new Audio("Noise Hit Game 03 SHORTENED.mp3");
+var gameOver = new Audio("Game Over Sci-Fi.wav");
+var hitPaddle = new Audio("Flash Hit.wav");
 
 var bricks = [];
 for (var c = 0; c < brickColumnCount; c++) {
@@ -48,7 +54,7 @@ function drawBall() {
 function drawPaddle() {
   ctx.beginPath();
   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
+  ctx.fillStyle = "#FF003F";
   ctx.fill();
   ctx.closePath();
 }
@@ -84,6 +90,7 @@ function draw() {
   drawPaddle();
   drawScore();
   drawLives();
+  drawGameTitle();
   collisionDetection();
   x += dx;
   y += dy;
@@ -99,11 +106,13 @@ function draw() {
   } else if (y + dy > canvas.height - ballRadius) {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
+      hitPaddle.play();
     } else {
       //Code for lives
       lives--;
       if (!lives) {
-        alert("GAME OVER");
+        gameOver.play();
+        alert("You failed us... Our world will be destroyed.");
         document.location.reload();
       } else {
         x = canvas.width / 2;
@@ -161,6 +170,7 @@ function collisionDetection() {
     for (var r = 0; r < brickRowCount; r++) {
       var b = bricks[c][r];
       if (b.status == 1) {
+        bgSound.play();
         if (
           x > b.x &&
           x < b.x + brickWidth &&
@@ -169,9 +179,10 @@ function collisionDetection() {
         ) {
           dy = -dy;
           b.status = 0;
+          hitBrick.play();
           score++;
           if (score == brickRowCount * brickColumnCount) {
-            alert("Well done, young padawan. YOU WIN!");
+            alert("Yay, you saved our world!");
             document.location.reload();
           }
         }
@@ -181,15 +192,31 @@ function collisionDetection() {
 }
 
 function drawScore() {
-  ctx.font = "16px Arial";
+  ctx.font = "20px Murray Inline Grunge";
   ctx.fillStyle = "#FFFFFF";
   ctx.fillText("Score: " + score, 8, 20);
 }
 
 function drawLives() {
-  ctx.font = "16px Arial";
+  ctx.font = "20 Murray Inline Grunge";
   ctx.fillStyle = "#FFFFFF";
   ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
+}
+
+function drawLives() {
+  ctx.font = "20 Murray Inline Grunge";
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillText("Lives: " + lives, canvas.width - 66, 20);
+}
+
+function drawGameTitle() {
+  ctx.font = "22 Mecha Grunge";
+  ctx.fillStyle = "#AFEEEE";
+  ctx.fillText(
+    "Space Force II: Revenge of the White Blocks",
+    canvas.width - 480,
+    20
+  );
 }
 
 draw();
